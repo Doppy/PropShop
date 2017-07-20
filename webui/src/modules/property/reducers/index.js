@@ -5,7 +5,7 @@ const initialState = {
   fetchStatus: {},
   errors: {},
   search: {
-    home: {
+    default: {
       params: {},
       result: [],
       total: 0,

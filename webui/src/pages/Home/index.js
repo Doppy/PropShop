@@ -48,7 +48,7 @@ class SearchParameters {
 
 const mapStateToProps = (state, ownProps) => {
   const propertySearch = _.get(state, 'entities.properties.search.home');
-  const visibleIDs = propertySearch.result;
+  const visibleIDs = _.get(propertySearch, 'result', []);
 
   const properties = _.map(visibleIDs, id => _.get(state, `entities.properties.entities.${id}`));
   const areaEntities = _.get(state, 'entities.areas.entities');
@@ -63,10 +63,10 @@ const mapStateToProps = (state, ownProps) => {
     banner: state.banners,
     userDidSearch: true, // _.get(ownProps, 'location.search') !== '',
     realestate: {
-      loading: propertySearch.loading,
+      loading: _.get(propertySearch, 'loading', false),
       filter: _.get(ownProps, 'location.search') !== '',
       data: _.compact(properties),
-      total: propertySearch.total,
+      total: _.get(propertySearch, 'total', 0),
     },
     configRealestate: state.config,
   };
