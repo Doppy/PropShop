@@ -10,8 +10,6 @@ const MarkerWithLabel = require('markerwithlabel')(google.maps);
 
 class MapLocation extends Component {
 
-  map;
-
   static propTypes = {
     area: T.shape({
       name: T.string,
@@ -20,6 +18,13 @@ class MapLocation extends Component {
         sw: T.shape({ lat: T.number, lng: T.number }),
       }),
     }),
+    nearby: T.arrayOf(T.shape({
+      id: T.string,
+      location: T.shape({
+        lat: T.number,
+        lng: T.number,
+      })
+    })),
     startWithHilightMarkersWithId: T.arrayOf(T.string),
     onBoundChanged: T.func,
   }
@@ -33,12 +38,14 @@ class MapLocation extends Component {
         sw: { lat: undefined, lng: undefined },
       },
     },
+    nearby: [],
     startWithHilightMarkersWithId: [],
     onBoundChanged: theMap => console.log('map zoom_changed', theMap.getBounds().toJSON()),
   }
 
   constructor(props) {
     super(props);
+    this.map = null;
     this.markers = {};
   }
 
@@ -83,8 +90,7 @@ class MapLocation extends Component {
         // New
         this.createMarker(nextPropsMarkerData);
       }
-    })
-
+    });
   }
 
   createMarker = (markerData) => {
@@ -92,7 +98,7 @@ class MapLocation extends Component {
     const marker = new MarkerWithLabel({
       position: new google.maps.LatLng(markerData.location.lat, markerData.location.lon),
       map: this.map,
-      labelContent: `<div class="price">${numeral(markerData.price).format('฿0.0a')}</div>`,
+      labelContent: `<div class="price">${numeral(markerData.price).format('0.0a')}</div>`,
       labelAnchor: new google.maps.Point(0, 25),
       labelClass: `custom-marker ${markerData.hilight ? 'hilight' : ''}`,
       icon: 'no',
